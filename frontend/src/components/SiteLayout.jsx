@@ -15,7 +15,7 @@ export default function SiteLayout() {
     <main className="app-shell">
       <header className="topbar">
         <Link className="brand" to="/" aria-label={t("Home")}>
-          <img className="brand-mark" src="/touhou-character.png" alt="" />
+          <img className="brand-mark" src={`${import.meta.env.BASE_URL}touhou-character.png`} alt="" />
           <span><strong>touhou_<span className="brand-accent">「Project」</span></strong><small>{t("TOUHOU CHARACTER ARCHIVE")}</small></span>
         </Link>
         <nav className="top-nav" aria-label={t("Main navigation")}>

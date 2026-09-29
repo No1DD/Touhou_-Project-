@@ -113,7 +113,7 @@ export default function HomePage() {
         <div className="hero-artwork">
           <div className="hero-art-frame">
             <span className="art-stamp">{language === "en" ? <>GEN<br />SOKYO</> : <>幻想<br />郷</>}</span>
-            <img src="/touhou-character.png" alt={t("A Touhou-inspired pixel character illustration")} />
+            <img src={`${import.meta.env.BASE_URL}touhou-character.png`} alt={t("A Touhou-inspired pixel character illustration")} />
           </div>
           <p>{t("CHARACTER ARCHIVE · {number}", { number: "001" })}</p>
         </div>
