@@ -7,6 +7,7 @@ import { apiRequest } from "../api.js";
 import { useAuth } from "../auth.jsx";
 import CharacterCard from "../components/CharacterCard.jsx";
 import useFavorites from "../hooks/useFavorites.js";
+import { useLanguage } from "../language.jsx";
 
 // 顯示登入使用者的個人首頁與投稿管理清單。
 export default function DashboardPage() {
@@ -17,6 +18,7 @@ export default function DashboardPage() {
   const [activeList, setActiveList] = useState("contributions");
   // 讀取目前登入者資料，受保護 API 使用 HttpOnly Cookie。
   const { user } = useAuth();
+  const { t } = useLanguage();
   // 讀取收藏清單、收藏操作和收藏載入狀態。
   const { favorites, loading: favoritesLoading, pendingId, error: favoritesError, toggleFavorite } = useFavorites();
 
@@ -32,7 +34,7 @@ export default function DashboardPage() {
 
   // 刪除使用者選定的投稿並更新清單。
   async function deleteCharacter(character) {
-    if (!window.confirm(`確定刪除「${character.character_name}」嗎？`)) return;
+    if (!window.confirm(t("Delete character \"{name}\"?", { name: character.character_name }))) return;
     try {
       await apiRequest(`/characters/${character.id}`, { method: "DELETE" });
       setCharacters((current) => current.filter((item) => item.id !== character.id));
@@ -53,25 +55,25 @@ export default function DashboardPage() {
       <div className="dashboard-heading">
         <div>
           <p className="eyebrow eyebrow-dark">PERSONAL DASHBOARD</p>
-          <h1>你好，{user.username}</h1>
-          <p>管理你的投稿與帳號資料。</p>
+          <h1>{t("Hello, {name}", { name: user.username })}</h1>
+          <p>{t("Manage your contributions and account.")}</p>
         </div>
-        <Link className="button button-red" to="/characters/new">＋ 新增角色</Link>
+        <Link className="button button-red" to="/characters/new">＋ {t("Add character")}</Link>
       </div>
       <div className="dashboard-stats">
-        <div><span>{String(characters.length).padStart(2, "0")}</span><small>我的投稿</small></div>
-        <div><span>{String(favorites.length).padStart(2, "0")}</span><small>我的收藏</small></div>
-        <div><span>{user.email}</span><small>登入帳號</small></div>
+        <div><span>{String(characters.length).padStart(2, "0")}</span><small>{t("My contributions")}</small></div>
+        <div><span>{String(favorites.length).padStart(2, "0")}</span><small>{t("My favorites")}</small></div>
+        <div><span>{user.email}</span><small>{t("Signed-in account")}</small></div>
       </div>
-      <div className="dashboard-tabs segmented-control" role="tablist" aria-label="個人角色清單">
-        <button type="button" role="tab" aria-selected={activeList === "contributions"} className={activeList === "contributions" ? "selected" : ""} onClick={() => setActiveList("contributions")}>我的投稿 <span>{characters.length}</span></button>
-        <button type="button" role="tab" aria-selected={activeList === "favorites"} className={activeList === "favorites" ? "selected" : ""} onClick={() => setActiveList("favorites")}>我的收藏 <span>{favorites.length}</span></button>
+      <div className="dashboard-tabs segmented-control" role="tablist" aria-label={t("Personal character lists")}>
+        <button type="button" role="tab" aria-selected={activeList === "contributions"} className={activeList === "contributions" ? "selected" : ""} onClick={() => setActiveList("contributions")}>{t("My contributions")} <span>{characters.length}</span></button>
+        <button type="button" role="tab" aria-selected={activeList === "favorites"} className={activeList === "favorites" ? "selected" : ""} onClick={() => setActiveList("favorites")}>{t("My favorites")} <span>{favorites.length}</span></button>
       </div>
       <div className="section-heading dashboard-list-heading">
-        <div><p className="eyebrow eyebrow-dark">{activeList === "favorites" ? "SAVED CHARACTERS" : "YOUR CONTRIBUTIONS"}</p><h2>{activeList === "favorites" ? "收藏的角色" : "我的角色"} <span>／ {visibleCharacters.length}</span></h2></div>
+        <div><p className="eyebrow eyebrow-dark">{activeList === "favorites" ? t("SAVED CHARACTERS") : t("YOUR CONTRIBUTIONS")}</p><h2>{activeList === "favorites" ? t("Favorites") : t("My characters")} <span>／ {visibleCharacters.length}</span></h2></div>
       </div>
       {(error || favoritesError) && <p className="page-alert" role="alert">{error || favoritesError}</p>}
-      {loading || favoritesLoading ? <p className="page-state">正在讀取個人清單…</p> : (
+      {loading || favoritesLoading ? <p className="page-state">{t("Loading your lists…")}</p> : (
         <div className="character-grid">
           {visibleCharacters.map((character) => (
             <CharacterCard
@@ -85,15 +87,15 @@ export default function DashboardPage() {
           ))}
           {visibleCharacters.length === 0 && (
             <div className="empty-state">
-              <span>{activeList === "favorites" ? "收藏" : "投稿"}</span>
-              <h3>{activeList === "favorites" ? "收藏清單還是空的" : "你還沒有投稿"}</h3>
-              <p>{activeList === "favorites" ? "到角色名錄按下愛心，喜歡的角色就會收在這裡。" : "新增第一位角色，開始建立你的名錄。"}</p>
-              <Link className="button button-red" to={activeList === "favorites" ? "/" : "/characters/new"}>{activeList === "favorites" ? "瀏覽角色名錄" : "新增角色"}</Link>
+              <span>{activeList === "favorites" ? t("Favorites") : t("Contributions")}</span>
+              <h3>{activeList === "favorites" ? t("Your favorites list is empty") : t("You have not contributed any characters yet")}</h3>
+              <p>{activeList === "favorites" ? t("Select the heart on a character card to save it here.") : t("Add your first character to start your archive.")}</p>
+              <Link className="button button-red" to={activeList === "favorites" ? "/" : "/characters/new"}>{activeList === "favorites" ? t("Browse characters") : t("Add character")}</Link>
             </div>
           )}
         </div>
       )}
-      <div className="dashboard-back"><Link to="/">← 返回角色名錄</Link></div>
+      <div className="dashboard-back"><Link to="/">← {t("Back to the character archive")}</Link></div>
     </section>
   );
 }

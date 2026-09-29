@@ -6,9 +6,11 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth.jsx";
 // 匯入 API 呼叫工具。
 import { apiRequest } from "../api.js";
+import { useLanguage } from "../language.jsx";
 
 // 顯示 AI 抽取的角色關係網，節點可點擊查看角色詳情。
 export default function RelationshipGraphPage() {
+  const { language, t } = useLanguage();
   // 讀取 URL 中可選的中心角色。
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCharacterId = searchParams.get("character_id") || "";
@@ -53,7 +55,6 @@ export default function RelationshipGraphPage() {
   useEffect(() => {
     if (!containerRef.current) return undefined;
     const observer = new ResizeObserver(([entry]) => setGraphWidth(Math.max(300, Math.floor(entry.contentRect.width))));
-    observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -84,37 +85,36 @@ export default function RelationshipGraphPage() {
     <section className="workspace-section relationship-page">
       <header className="relationship-heading">
         <div>
-          <p className="eyebrow eyebrow-dark">AI RELATIONSHIP MAP</p>
-          <h1>角色關係網</h1>
-          <p>關係由角色資料推論，僅供探索參考；可拖曳節點整理視角。</p>
+          <p className="eyebrow eyebrow-dark">{t("AI RELATIONSHIP MAP")}</p>
+          <h1>{t("Character relationships")}</h1>
+          <p>{t("Relationships are inferred from character entries and are for exploration only. Drag nodes to arrange the view.")}</p>
         </div>
-        <Link className="button button-quiet" to="/">← 返回角色名錄</Link>
+        <Link className="button button-quiet" to="/">← {t("Back to the character archive")}</Link>
       </header>
       <div className="relationship-controls">
-        <label className="field-label">選擇關係圖中心角色
+        <label className="field-label">{t("Choose a central character")}
           <select value={selectedCharacterId} onChange={handleCharacterChange}>
-            <option value="">全部已分析關係</option>
+            <option value="">{t("All analyzed relationships")}</option>
             {characters.map((character) => <option key={character.id} value={character.id}>{character.character_name}</option>)}
           </select>
         </label>
         {user && selectedCharacter && selectedCharacter.created_by === user.id && (
           <button className="button button-red" type="button" disabled={analyzing} onClick={handleAnalyze}>
-            {analyzing ? "AI 分析中…" : "✳ 重新提取關係"}
+            {analyzing ? t("Re-analyzing…") : t("✳ Re-analyze relationships")}
           </button>
         )}
       </div>
       {error && <p className="page-alert" role="alert">{error}</p>}
       <div className="relationship-legend">
-        <span><i className="legend-node" />角色</span>
-        <span><i className="legend-line" />AI 推論關係</span>
-        <span>{graph.nodes.length} 個角色 · {graph.links.length} 條關係</span>
+        <span><i className="legend-node" />{t("Character")}</span>
+        <span><i className="legend-line" />{t("AI-inferred relationships")}</span>
+        <span>{t("{nodes} characters · {links} relationships", { nodes: graph.nodes.length, links: graph.links.length })}</span>
       </div>
       <div className="relationship-canvas" ref={containerRef}>
-        {loading ? <p className="page-state">正在載入關係網…</p> : graph.nodes.length > 0 ? (
+        {loading ? <p className="page-state">{t("Loading relationships…")}</p> : graph.nodes.length > 0 ? (
           <ForceGraph2D
             graphData={graph}
             width={graphWidth}
-            height={560}
             backgroundColor="#fffefa"
             nodeId="id"
             nodeLabel={(node) => `${node.name}${node.group ? ` · ${node.group}` : ""}`}
@@ -140,21 +140,21 @@ export default function RelationshipGraphPage() {
             linkWidth={(link) => 1 + (link.confidence || 0.5) * 2}
             linkDirectionalArrowLength={5}
             linkDirectionalArrowRelPos={1}
-            linkLabel={(link) => `${link.relation_type}: ${link.description || "AI 推論關係"}`}
+            linkLabel={(link) => `${link.relation_type}: ${link.description || t("AI-inferred relationships")}`}
             onNodeClick={(node) => navigate(`/characters/${node.id}`)}
             cooldownTicks={100}
             d3AlphaDecay={0.025}
           />
         ) : (
           <div className="relationship-empty">
-            <span>緣</span>
-            <h2>{selectedCharacterId ? "尚未有已確認的關係" : "關係網還沒有資料"}</h2>
-            <p>{selectedCharacterId ? "角色建立者可從角色詳情或上方按鈕啟動 AI 關係分析。" : "前往角色詳情，使用 AI 關係分析建立第一條連線。"}</p>
-            {selectedCharacterId && <Link className="button button-quiet" to={`/characters/${selectedCharacterId}`}>查看角色詳情</Link>}
+            <span>{language === "en" ? "LINK" : "緣"}</span>
+            <h2>{selectedCharacterId ? t("No confirmed relationships yet") : t("The relationship map is empty")}</h2>
+            <p>{selectedCharacterId ? t("The character creator can start an AI analysis from the character page or the button above.") : t("Visit a character page and use AI analysis to create the first connection.")}</p>
+            {selectedCharacterId && <Link className="button button-quiet" to={`/characters/${selectedCharacterId}`}>{t("View character details")}</Link>}
           </div>
         )}
       </div>
-      <p className="relationship-disclaimer">AI 結果可能不完整或不正確；每次重新分析會替換該角色先前的 AI 推論關係。</p>
+      <p className="relationship-disclaimer">{t("AI results may be incomplete or incorrect. Re-analysis replaces the character's previous AI-inferred relationships.")}</p>
     </section>
   );
 }

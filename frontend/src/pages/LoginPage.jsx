@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // 匯入登入 API 和全站登入狀態。
 import { useAuth } from "../auth.jsx";
+import { useLanguage } from "../language.jsx";
 
 // 顯示獨立登入頁，登入後進入個人主頁或原先受保護頁面。
 export default function LoginPage() {
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [busy, setBusy] = useState(false);
   // 取得登入動作和登入後導向位置。
   const { login } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const notice = location.state?.notice;
@@ -36,28 +38,28 @@ export default function LoginPage() {
     <section className="workspace-section auth-page">
       <div className="auth-layout">
         <div className="auth-panel">
-          <p className="eyebrow eyebrow-dark">MEMBER ACCESS</p>
-          <h1>登入資料庫</h1>
-          <p className="auth-intro">登入後管理投稿，或查看你的個人主頁。</p>
-          {notice && <p className="page-success" role="status">{notice}</p>}
+          <p className="eyebrow eyebrow-dark">{t("MEMBER ACCESS")}</p>
+          <h1>{t("Log in to the archive")}</h1>
+          <p className="auth-intro">{t("Manage your contributions and view your dashboard.")}</p>
+          {notice && <p className="page-success" role="status">{t(notice)}</p>}
           {error && <p className="page-alert" role="alert">{error}</p>}
           <form onSubmit={handleSubmit}>
-            <label className="field-label">電子郵件
+            <label className="field-label">{t("Email address")}
               <input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} />
             </label>
-            <label className="field-label">密碼
+            <label className="field-label">{t("Password")}
               <input required type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
             </label>
-            <button className="button button-red auth-submit" type="submit" disabled={busy}>{busy ? "登入中…" : "登入資料庫"}</button>
+            <button className="button button-red auth-submit" type="submit" disabled={busy}>{busy ? t("Logging in…") : t("Log in to the archive")}</button>
           </form>
-          <p className="auth-switch-line">還沒有帳號？ <Link to="/register">建立新帳號 ↗</Link></p>
+          <p className="auth-switch-line">{t("No account yet?")} <Link to="/register">{t("Create an account ↗")}</Link></p>
         </div>
         <aside className="auth-aside">
           <span className="aside-symbol" aria-hidden="true">☯</span>
-          <p className="eyebrow">YOUR GENSOKYO ACCOUNT</p>
-          <h2>回到幻想鄉，<br />繼續編寫名錄。</h2>
-          <p>管理你的角色投稿、補充能力與故事，讓資料庫逐步完整。</p>
-          <span className="aside-caption">TOUHOU PROJECT · COMMUNITY ARCHIVE</span>
+          <p className="eyebrow">{t("YOUR GENSOKYO ACCOUNT")}</p>
+          <h2>{t("Return to Gensokyo,")}<br />{t("and keep the archive growing.")}</h2>
+          <p>{t("Manage your character contributions, add abilities and stories, and help complete the archive.")}</p>
+          <span className="aside-caption">{t("TOUHOU PROJECT · COMMUNITY ARCHIVE")}</span>
         </aside>
       </div>
     </section>

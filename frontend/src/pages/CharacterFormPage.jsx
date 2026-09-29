@@ -12,13 +12,14 @@ import { CharacterAvatar } from "../components/CharacterCard.jsx";
 import AbilityRadar from "../components/LazyAbilityRadar.jsx";
 // 匯入可搜尋並建立標籤的多選欄位。
 import TagPicker from "../components/TagPicker.jsx";
+import { useLanguage } from "../language.jsx";
 
 // 定義表單欄位初始值。
 const EMPTY_FORM = { character_name: "", abilities: "", biography: "", origin_anime: "", reference_url: "", theme_song: "", theme_song_url: "" };
 // 定義新角色的六項能力預設值。
 const DEFAULT_STATS = { power: "5", defense: "5", speed: "5", magic: "5", technique: "5", luck: "5" };
 // 定義能力表單顯示文字。
-const STAT_LABELS = { power: "力量", defense: "防禦", speed: "速度", magic: "魔力", technique: "技巧", luck: "運氣" };
+const STAT_LABELS = { power: "Strength", defense: "Defense", speed: "Speed", magic: "Magic", technique: "Technique", luck: "Luck" };
 // 固定輸出 512 x 512 的 JPEG 頭像，讓列表和詳情頁使用一致比例。
 const AVATAR_OUTPUT_SIZE = 512;
 
@@ -34,7 +35,7 @@ async function createCroppedAvatar(imageSource, croppedArea) {
   canvas.height = AVATAR_OUTPUT_SIZE;
   // 繪製裁切範圍並使用高品質縮放。
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("瀏覽器無法處理這張圖片");
+  if (!context) throw new Error("Your browser cannot process this image");
   context.imageSmoothingQuality = "high";
   context.drawImage(
     image,
@@ -51,13 +52,14 @@ async function createCroppedAvatar(imageSource, croppedArea) {
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (blob) resolve(blob);
-      else reject(new Error("圖片裁切失敗，請重試"));
+      else reject(new Error("Crop failed; please try again"));
     }, "image/jpeg", 0.92);
   });
 }
 
 // 以獨立網址建立或修改角色資料。
 export default function CharacterFormPage() {
+  const { t } = useLanguage();
   // 有 ID 時進入編輯模式，無 ID 時進入新增模式。
   const { id } = useParams();
   const isEditing = Boolean(id);
@@ -177,7 +179,7 @@ export default function CharacterFormPage() {
     event.target.value = "";
     if (!selectedFile) return;
     if (selectedFile.size > 5 * 1024 * 1024) {
-      setError("頭像大小不可超過 5 MiB");
+      setError(t("Avatar must be 5 MiB or smaller"));
       return;
     }
     setError("");
@@ -199,7 +201,7 @@ export default function CharacterFormPage() {
       setAvatarPreviewUrl(URL.createObjectURL(croppedBlob));
       setCropSource("");
     } catch (cropError) {
-      setError(cropError.message);
+      setError(t(cropError.message));
     } finally {
       setCropping(false);
     }
@@ -235,86 +237,86 @@ export default function CharacterFormPage() {
     : null;
 
   // 編輯資料尚未載入時顯示載入狀態。
-  if (loading) return <section className="workspace-section"><p className="page-state">正在載入角色資料…</p></section>;
+  if (loading) return <section className="workspace-section"><p className="page-state">{t("Loading character details…")}</p></section>;
 
   return (
     <section className="workspace-section editor-page">
       <div className="editor-page-heading">
-        <p className="eyebrow eyebrow-dark">{isEditing ? "EDIT CHARACTER" : "NEW CONTRIBUTION"}</p>
-        <h1>{isEditing ? "編輯角色資料" : "新增角色"}</h1>
-        <p>補上角色名稱、能力與背景資料，完成後即可加入公開名錄。</p>
+        <p className="eyebrow eyebrow-dark">{isEditing ? t("EDIT CHARACTER") : t("NEW CONTRIBUTION")}</p>
+        <h1>{isEditing ? t("Edit character entry") : t("New character contribution")}</h1>
+        <p>{t("Add a character name, abilities, and background to the public archive.")}</p>
       </div>
       {error && <p className="page-alert" role="alert">{error}</p>}
       <div className="editor-layout">
         <form className="editor-panel" onSubmit={handleSubmit}>
-          <label className="field-label">角色名稱 <span>*</span>
-            <input required maxLength="100" value={form.character_name} onChange={(event) => setForm({ ...form, character_name: event.target.value })} placeholder="例如：博麗靈夢" />
+          <label className="field-label">{t("Character name")} <span>*</span>
+            <input required maxLength="100" value={form.character_name} onChange={(event) => setForm({ ...form, character_name: event.target.value })} placeholder={t("e.g. Reimu Hakurei")} />
           </label>
           <div className="field-pair">
-            <label className="field-label">能力
-              <input maxLength="255" value={form.abilities} onChange={(event) => setForm({ ...form, abilities: event.target.value })} placeholder="操縱境界的能力" />
+            <label className="field-label">{t("Abilities")}
+              <input maxLength="255" value={form.abilities} onChange={(event) => setForm({ ...form, abilities: event.target.value })} placeholder={t("e.g. Manipulates boundaries")} />
             </label>
-            <label className="field-label">來源作品
-              <input maxLength="255" value={form.origin_anime} onChange={(event) => setForm({ ...form, origin_anime: event.target.value })} placeholder="東方紅魔鄉" />
+            <label className="field-label">{t("Source work name")}
+              <input maxLength="255" value={form.origin_anime} onChange={(event) => setForm({ ...form, origin_anime: event.target.value })} placeholder={t("e.g. Embodiment of Scarlet Devil")} />
             </label>
           </div>
           <div className="tag-picker-grid">
-            <TagPicker label="作品標籤" kind="work" options={workTagOptions} value={selectedWorkTags} onChange={setSelectedWorkTags} onCreate={createTag} />
-            <TagPicker label="屬性標籤" kind="attribute" options={attributeTagOptions} value={selectedAttributeTags} onChange={setSelectedAttributeTags} onCreate={createTag} />
+            <TagPicker label={t("Work tags")} kind="work" options={workTagOptions} value={selectedWorkTags} onChange={setSelectedWorkTags} onCreate={createTag} />
+            <TagPicker label={t("Attribute tags")} kind="attribute" options={attributeTagOptions} value={selectedAttributeTags} onChange={setSelectedAttributeTags} onCreate={createTag} />
           </div>
           <fieldset className="stat-fieldset">
-            <legend>角色能力值 <span>0–10</span></legend>
-            <p>依你對角色的理解評分，會呈現在角色詳情雷達圖。</p>
+            <legend>{t("Character ability scores")} <span>0–10</span></legend>
+            <p>{t("Rate the character based on your interpretation. Scores appear in the detail radar chart.")}</p>
             <div className="stat-input-grid">
               {Object.entries(STAT_LABELS).map(([key, label]) => (
-                <label className="field-label stat-field" key={key}>{label}
+                <label className="field-label stat-field" key={key}>{t(label)}
                   <input type="number" min="0" max="10" step="1" value={stats[key]} onChange={(event) => setStats({ ...stats, [key]: event.target.value })} placeholder="0–10" />
                 </label>
               ))}
             </div>
           </fieldset>
-          <label className="field-label">角色介紹
-            <textarea rows="6" value={form.biography} onChange={(event) => setForm({ ...form, biography: event.target.value })} placeholder="記錄角色背景、故事與符卡……" />
+          <label className="field-label">{t("Character biography")}
+            <textarea rows="6" value={form.biography} onChange={(event) => setForm({ ...form, biography: event.target.value })} placeholder={t("Add background, story, and spell card details…")} />
           </label>
-          <label className="field-label">參考網址
+          <label className="field-label">{t("Reference URL")}
             <input type="url" maxLength="500" value={form.reference_url} onChange={(event) => setForm({ ...form, reference_url: event.target.value })} placeholder="https://" />
           </label>
           <div className="field-pair">
-            <label className="field-label">角色主題歌曲
-              <input maxLength="255" value={form.theme_song} onChange={(event) => setForm({ ...form, theme_song: event.target.value })} placeholder="例如：少女綺想曲 ～ Dream Battle" />
+            <label className="field-label">{t("Theme song")}
+              <input maxLength="255" value={form.theme_song} onChange={(event) => setForm({ ...form, theme_song: event.target.value })} placeholder={t("e.g. Maiden's Capriccio ~ Dream Battle")} />
             </label>
-            <label className="field-label">歌曲連結
+            <label className="field-label">{t("Track URL")}
               <input type="url" maxLength="500" value={form.theme_song_url} onChange={(event) => setForm({ ...form, theme_song_url: event.target.value })} placeholder="https://" />
             </label>
           </div>
-          <label className="field-label">角色頭像
+          <label className="field-label">{t("Character portrait")}
             <input className="file-input" type="file" accept="image/jpeg,image/png,image/gif,image/webp" onChange={handleAvatarSelection} />
-            <small>選擇圖片後可拖曳位置、調整縮放；最後只會上傳圓框內的正方形裁切。JPG、PNG、GIF 或 WEBP，最大 5 MiB。</small>
-            {avatar && <span className="crop-ready-label">✓ 圓形頭像已裁切完成</span>}
+            <small>{t("Choose an image, drag to position, and zoom to crop a square portrait. Only the circular crop is uploaded. JPG, PNG, GIF, or WEBP, up to 5 MiB.")}</small>
+            {avatar && <span className="crop-ready-label">{t("✓ Circular portrait ready")}</span>}
           </label>
           <div className="form-actions">
-            <button className="button button-red" type="submit" disabled={busy}>{busy ? "儲存中…" : isEditing ? "儲存修改" : "建立角色"}</button>
-            <Link className="button button-quiet" to={isEditing ? `/characters/${id}` : "/dashboard"}>取消</Link>
+            <button className="button button-red" type="submit" disabled={busy}>{busy ? t("Saving…") : isEditing ? t("Save changes") : t("Create character")}</button>
+            <Link className="button button-quiet" to={isEditing ? `/characters/${id}` : "/dashboard"}>{t("Cancel")}</Link>
           </div>
         </form>
         <aside className="editor-aside">
-          <p className="eyebrow">PREVIEW</p>
+          <p className="eyebrow">{t("PREVIEW")}</p>
           {avatarPreviewUrl ? (
-            <img className="character-avatar character-avatar-large" src={avatarPreviewUrl} alt={`${form.character_name || "角色"}裁切後頭像預覽`} />
+            <img className="character-avatar character-avatar-large" src={avatarPreviewUrl} alt={`${form.character_name || t("Character")} ${t("avatar crop preview")}`} />
           ) : existingCharacter ? (
             <CharacterAvatar character={existingCharacter} large />
           ) : (
             <div className="preview-placeholder">{form.character_name.slice(0, 1) || "?"}</div>
           )}
-          <h2>{form.character_name || "角色名稱"}</h2>
-          <p>{form.abilities || "能力尚未填寫"}</p>
-          <span>{form.origin_anime || "來源作品"}</span>
+          <h2>{form.character_name || t("Character name")}</h2>
+          <p>{form.abilities || t("Ability not provided")}</p>
+          <span>{form.origin_anime || t("Source work name")}</span>
           <div className="editor-radar-preview">
-            <p className="eyebrow">ABILITY PREVIEW</p>
+            <p className="eyebrow">{t("ABILITY PREVIEW")}</p>
             <AbilityRadar stats={previewStats} compact />
           </div>
           <div className="aside-rule" />
-          <p className="preview-help">投稿會公開出現在角色名錄。請確認資料正確並遵守作品內容規範。</p>
+          <p className="preview-help">{t("Your contribution will appear in the public archive. Please verify the information and respect the source work's content guidelines.")}</p>
         </aside>
       </div>
       {cropSource && (
@@ -322,12 +324,12 @@ export default function CharacterFormPage() {
           <section className="crop-dialog" role="dialog" aria-modal="true" aria-labelledby="crop-title">
             <header className="crop-dialog-heading">
               <div>
-                <p className="eyebrow eyebrow-dark">AVATAR EDITOR</p>
-                <h2 id="crop-title">調整頭像位置</h2>
+                <p className="eyebrow eyebrow-dark">{t("AVATAR EDITOR")}</p>
+                <h2 id="crop-title">{t("Adjust portrait crop")}</h2>
               </div>
-              <button className="crop-close" type="button" aria-label="關閉裁切視窗" onClick={() => setCropSource("")}>×</button>
+              <button className="crop-close" type="button" aria-label={t("Close crop dialog")} onClick={() => setCropSource("")}>×</button>
             </header>
-            <p className="crop-instructions">拖曳圖片調整位置，使用下方滑桿調整縮放；圓框外的部分不會上傳。</p>
+            <p className="crop-instructions">{t("Drag the image to position it, then use the slider to zoom. Areas outside the circle will not be uploaded.")}</p>
             <div className="crop-stage">
               <Cropper
                 image={cropSource}
@@ -343,13 +345,13 @@ export default function CharacterFormPage() {
               />
             </div>
             <label className="crop-zoom-control">
-              <span>縮放</span>
+              <span>{t("Zoom")}</span>
               <input type="range" min="1" max="3" step="0.01" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} />
               <output>{zoom.toFixed(1)}×</output>
             </label>
             <footer className="crop-dialog-actions">
-              <button className="button button-quiet" type="button" onClick={() => setCropSource("")}>取消</button>
-              <button className="button button-red" type="button" disabled={!croppedAreaPixels || cropping} onClick={applyAvatarCrop}>{cropping ? "裁切中…" : "使用這個裁切"}</button>
+              <button className="button button-quiet" type="button" onClick={() => setCropSource("")}>{t("Cancel")}</button>
+              <button className="button button-red" type="button" disabled={!croppedAreaPixels || cropping} onClick={applyAvatarCrop}>{cropping ? t("Cropping…") : t("Use this crop")}</button>
             </footer>
           </section>
         </div>

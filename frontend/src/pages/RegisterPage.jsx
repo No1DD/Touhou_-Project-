@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // 匯入共用 API 呼叫函式。
 import { apiRequest } from "../api.js";
+import { useLanguage } from "../language.jsx";
 
 // 顯示獨立註冊頁，建立帳號後導向登入頁。
 export default function RegisterPage() {
@@ -11,6 +12,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // 將新帳號資料送到 FastAPI。
   async function handleSubmit(event) {
@@ -19,7 +21,7 @@ export default function RegisterPage() {
     setError("");
     try {
       await apiRequest("/auth/register", { method: "POST", body: JSON.stringify(form) });
-      navigate("/login", { replace: true, state: { notice: "帳號建立成功，請登入。" } });
+      navigate("/login", { replace: true, state: { notice: "Account created successfully. Please log in." } });
     } catch (registerError) {
       setError(registerError.message);
     } finally {
@@ -32,29 +34,29 @@ export default function RegisterPage() {
       <div className="auth-layout">
         <div className="auth-panel">
           <p className="eyebrow eyebrow-dark">CREATE AN ACCOUNT</p>
-          <h1>加入角色資料庫</h1>
-          <p className="auth-intro">建立帳號後即可投稿並管理自己的角色資料。</p>
+          <h1>{t("Join the character archive")}</h1>
+          <p className="auth-intro">{t("Create an account to contribute and manage your character entries.")}</p>
           {error && <p className="page-alert" role="alert">{error}</p>}
           <form onSubmit={handleSubmit}>
-            <label className="field-label">使用者名稱
+            <label className="field-label">{t("Username")}
               <input required minLength="1" maxLength="100" autoComplete="name" value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} />
             </label>
-            <label className="field-label">電子郵件
+            <label className="field-label">{t("Email address")}
               <input required type="email" maxLength="100" autoComplete="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
             </label>
-            <label className="field-label">密碼 <small>至少 8 個字元</small>
+            <label className="field-label">{t("Password")} <small>{t("At least 8 characters")}</small>
               <input required type="password" minLength="8" maxLength="128" autoComplete="new-password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} />
             </label>
-            <button className="button button-red auth-submit" type="submit" disabled={busy}>{busy ? "建立中…" : "建立帳號"}</button>
+            <button className="button button-red auth-submit" type="submit" disabled={busy}>{busy ? t("Creating account…") : t("Create account")}</button>
           </form>
-          <p className="auth-switch-line">已有帳號？ <Link to="/login">返回登入 ↗</Link></p>
+          <p className="auth-switch-line">{t("Already have an account?")} <Link to="/login">{t("Back to login ↗")}</Link></p>
         </div>
         <aside className="auth-aside register-aside">
           <span className="aside-symbol" aria-hidden="true">✳</span>
-          <p className="eyebrow">CONTRIBUTE TO THE ARCHIVE</p>
-          <h2>從名字開始，<br />讓傳說留下紀錄。</h2>
-          <p>建立個人帳號後，便能新增角色、補上頭像，並持續維護自己的投稿。</p>
-          <span className="aside-caption">TOUHOU PROJECT · COMMUNITY ARCHIVE</span>
+          <p className="eyebrow">{t("CONTRIBUTE TO THE ARCHIVE")}</p>
+          <h2>{t("Start with a name,")}<br />{t("and give a legend a record.")}</h2>
+          <p>{t("Create an account to add characters, upload portraits, and maintain your contributions.")}</p>
+          <span className="aside-caption">{t("TOUHOU PROJECT · COMMUNITY ARCHIVE")}</span>
         </aside>
       </div>
     </section>

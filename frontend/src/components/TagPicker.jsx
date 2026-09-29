@@ -1,9 +1,11 @@
 // 匯入 React CreatableSelect，允許搜尋既有標籤或直接建立新標籤。
 import React from "react";
 import CreatableSelect from "react-select/creatable";
+import { useLanguage } from "../language.jsx";
 
 // 提供作品或屬性標籤的 Autocomplete 多選欄位。
 export default function TagPicker({ label, kind, options, value, onChange, onCreate, busy = false }) {
+  const { t } = useLanguage();
   // 定義符合目前深紅/白色 UI 的 React Select 樣式。
   const selectStyles = {
     control: (base, state) => ({
@@ -35,9 +37,9 @@ export default function TagPicker({ label, kind, options, value, onChange, onCre
         value={value}
         onChange={(selection) => onChange(selection || [])}
         onCreateOption={(name) => onCreate(name, kind)}
-        formatCreateLabel={(name) => `新增標籤「${name}」`}
-        noOptionsMessage={({ inputValue }) => inputValue ? "沒有相符標籤，可按 Enter 新增" : "尚無標籤，輸入文字新增"}
-        placeholder="搜尋或輸入新標籤…"
+        formatCreateLabel={(name) => t("Create tag {name}", { name })}
+        noOptionsMessage={({ inputValue }) => inputValue ? t("No matching tags. Press Enter to create one.") : t("No tags yet. Type to create one.")}
+        placeholder={t("Search or type a new tag…")}
         closeMenuOnSelect={false}
         styles={selectStyles}
       />
