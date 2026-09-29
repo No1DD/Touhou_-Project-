@@ -1,0 +1,30 @@
+# FastAPI 提供 REST API 與自動產生的 OpenAPI 文件。
+fastapi>=0.115,<1.0
+# Uvicorn 用來啟動本機 ASGI 網頁伺服器。
+uvicorn[standard]>=0.30,<1.0
+# SQLAlchemy ORM 支援 SQLite、PostgreSQL 與 MySQL。
+sqlalchemy>=2.0,<3.0
+# Alembic 用來以版本遷移管理正式資料庫 schema。
+alembic>=1.14,<2.0
+# psycopg 是 PostgreSQL 資料庫驅動。
+psycopg[binary]>=3.2,<4.0
+# PyMySQL 是 MySQL/MariaDB 資料庫驅動。
+PyMySQL>=1.1,<2.0
+# Pydantic Settings 從環境變數和 .env 載入應用程式設定。
+pydantic-settings>=2.6,<3.0
+# python-dotenv 讓 Pydantic Settings 讀取 UTF-8 .env 檔。
+python-dotenv>=1.0,<2.0
+# SlowAPI 對登入、註冊、上傳和 AI endpoint 做速率限制。
+slowapi>=0.1.9,<1.0
+# Redis client；Compose/多 worker 環境使用 Redis 共用限流狀態。
+redis>=5.0,<6.0
+# python-multipart 讓 FastAPI 能接收 HTML 表單和圖片上傳。
+python-multipart>=0.0.9
+# python-jose 用來建立和驗證 JWT 登入 token。
+python-jose[cryptography]>=3.3,<4.0
+# pwdlib 的 Argon2 extra 用來安全雜湊使用者密碼。
+pwdlib[argon2]>=0.2,<1.0
+# Cloudinary SDK 用來上傳、取得及刪除雲端圖片資產。
+cloudinary>=1.41,<2.0
+# OpenAI SDK 用來安全地從後端呼叫 AI 萃取角色關係。
+openai>=1.55,<3.0

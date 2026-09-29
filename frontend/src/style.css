@@ -1,0 +1,545 @@
+/* 建立和參考 PHP 網站一致的博麗紅、魔理沙金與黃昏深色主題。 */
+:root {
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  color: #272329;
+  background: #fdfbf7;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --ink: #272329;
+  --ink-soft: #706a6c;
+  --paper: #fdfbf7;
+  --white: #fffefa;
+  --red: #d32f2f;
+  --red-dark: #a6222b;
+  --gold: #ffc107;
+  --line: #e4dfd7;
+  --dark: #1f1a24;
+  --radius-small: 8px;
+  --radius-medium: 13px;
+  --shadow-panel: 0 12px 34px rgba(31, 26, 36, .09);
+}
+
+/* 統一盒模型，讓表單和卡片尺寸計算一致。 */
+* { box-sizing: border-box; }
+
+/* 設定頁面基本尺寸與微弱紅金色氛圍底紋。 */
+body { min-width: 320px; min-height: 100vh; margin: 0; background-color: var(--paper); background-image: radial-gradient(circle at 8% 28%, rgba(211,47,47,.045), transparent 34%), radial-gradient(circle at 92% 72%, rgba(255,193,7,.055), transparent 32%); }
+
+/* 讓按鈕、連結和表單沿用一致的字型。 */
+button, input, textarea { font: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid rgba(211, 47, 47, .36); outline-offset: 3px; }
+
+/* 使用主欄寬限制整體閱讀寬度。 */
+.app-shell { width: min(100%, 1600px); min-height: 100vh; margin: 0 auto; overflow: hidden; background: var(--paper); }
+
+/* 頂端導覽改成參考站的深色底與紅色識別線。 */
+.topbar { position: sticky; z-index: 4; top: 0; height: 76px; padding: 0 clamp(22px, 6vw, 92px); display: flex; align-items: center; justify-content: space-between; background: var(--dark); border-bottom: 4px solid var(--red); box-shadow: 0 5px 18px rgba(31,26,36,.2); }
+
+/* 品牌標示以圖章和緊湊字樣呈現。 */
+.brand { display: inline-flex; align-items: center; gap: 11px; color: white; text-decoration: none; }
+
+/* 品牌方章使用紅色底和白字。 */
+.brand-mark { width: 40px; height: 40px; display: block; object-fit: cover; border: 2px solid var(--red); border-radius: 50%; image-rendering: pixelated; }
+
+/* 品牌主名稱採較重字重。 */
+.brand strong { display: block; font-family: "Courier New", monospace; font-size: 17px; font-weight: 900; letter-spacing: 1px; }
+
+/* 英文副標縮小並增加辨識度。 */
+.brand small { display: block; margin-top: 3px; color: #bdb5bd; font-size: 8px; letter-spacing: 1.15px; }
+.brand-accent { color: var(--red); }
+
+/* 主導覽連結使用白字並以金色 hover 提示目前操作。 */
+.top-nav { margin-left: auto; margin-right: 26px; display: flex; align-items: center; gap: 25px; }
+.top-nav a { position: relative; padding: 9px 0; color: #eee9ed; font-size: 12px; text-decoration: none; transition: color 150ms ease; }
+.top-nav a:hover { color: var(--gold); }
+.top-nav a.active::after { position: absolute; right: 0; bottom: 0; left: 0; height: 2px; background: var(--gold); content: ""; }
+
+/* 導覽列操作群組垂直置中。 */
+.topbar-actions { display: flex; align-items: center; gap: 14px; }
+
+/* 登入者名稱採低對比輔助文字。 */
+.user-label { color: #e5dfe4; font-size: 13px; }
+
+/* 共用按鈕設置固定最小高度和清晰焦點。 */
+.button { min-height: 44px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: var(--radius-small); cursor: pointer; font-size: 13px; font-weight: 700; letter-spacing: .15px; white-space: nowrap; text-decoration: none; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+
+/* 主要操作採紅色實心按鈕。 */
+.button-red { color: white; background: linear-gradient(135deg, #d83a3d, #b92532); box-shadow: 0 4px 10px rgba(183, 37, 50, .2); }
+.button-red:hover { transform: translateY(-1px); background: linear-gradient(135deg, #c82d36, #9e1f2b); box-shadow: 0 7px 15px rgba(183, 37, 50, .27); }
+.button-red:active { transform: translateY(0); box-shadow: 0 2px 5px rgba(183, 37, 50, .2); }
+.button:disabled { opacity: .58; cursor: wait; transform: none; box-shadow: none; }
+
+/* 次要操作採白底邊框按鈕。 */
+.button-quiet { color: var(--ink); background: rgba(255, 255, 255, .74); border-color: #d5cec5; box-shadow: 0 2px 5px rgba(31, 26, 36, .04); }
+.button-quiet:hover { transform: translateY(-1px); background: #fff; border-color: #aaa09a; box-shadow: 0 5px 12px rgba(31, 26, 36, .08); }
+.topbar .button-quiet { color: white; background: transparent; border-color: #68606a; box-shadow: none; }
+.topbar .button-quiet:hover { color: var(--dark); background: white; border-color: white; }
+
+/* 導覽列按鈕採小尺寸。 */
+.button-small { min-height: 36px; padding: 0 14px; border-radius: 7px; font-size: 12px; }
+
+/* 主視覺採舊版深色紅調與雙欄構圖，搜尋入口保持第一屏可見。 */
+.intro { position: relative; min-height: 410px; padding: 48px clamp(22px, 9vw, 140px); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); align-items: center; gap: 30px; overflow: hidden; color: white; background: radial-gradient(circle at 79% 46%, rgba(211,47,47,.28), transparent 30%), linear-gradient(115deg, #1f1a24 0%, #30202b 60%, #49212b 100%); }
+.hero-copy { position: relative; z-index: 1; }
+
+/* 小型英文分類標籤。 */
+.eyebrow { margin: 0 0 14px; color: #d2b36e; font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+
+/* 深底用分類標籤延用深紅。 */
+.eyebrow-dark { color: var(--red); }
+
+/* 主標題用襯線字，建立資料典藏感。 */
+.intro h1 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(40px, 5vw, 61px); font-weight: 700; line-height: 1.16; }
+
+/* 強調主標的紅色詞組。 */
+.intro h1 em { color: var(--gold); font-style: normal; }
+
+/* 標題下方說明文字。 */
+.intro-copy { margin: 15px 0 0; color: #d2cdd0; font-size: 15px; }
+.hero-stats-link { margin-left: 12px; color: #f1d47f; font-size: 11px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.hero-stats-link:hover { color: white; text-decoration: underline; text-underline-offset: 3px; }
+
+/* 搜尋列延續原首頁的膠囊輸入與紅色搜尋按鈕。 */
+.hero-search { width: min(100%, 510px); min-height: 54px; margin-top: 25px; padding: 5px 6px 5px 17px; display: flex; align-items: center; gap: 11px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+.hero-search > span { color: var(--red); font-size: 24px; line-height: 1; }
+.hero-search input { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 13px; }
+.hero-search input::placeholder { color: #89838a; }
+.hero-search button { min-width: 94px; min-height: 42px; padding: 0 16px; border: 0; border-radius: 999px; color: white; background: linear-gradient(135deg, #df4043, #b72232); box-shadow: 0 3px 8px rgba(165, 28, 40, .25); cursor: pointer; font-size: 10px; font-weight: 800; letter-spacing: 1px; transition: transform 150ms ease, box-shadow 150ms ease; }
+.hero-search button:hover { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(165, 28, 40, .34); }
+
+/* 數量指標與瀏覽連結組成主視覺底部操作列。 */
+.hero-meta { max-width: 510px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.hero-meta .intro-count { margin-top: 21px; padding-top: 11px; border-color: #67525e; }
+.hero-meta .intro-count span { color: var(--gold); }
+.hero-meta > a { margin-top: 21px; color: #f1d47f; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-decoration: none; }
+.hero-meta > a span { margin-left: 5px; font-size: 15px; }
+
+/* 角色插圖使用本機素材與圓形紅金框，保留像素邊緣。 */
+.hero-artwork { position: relative; z-index: 1; display: grid; justify-items: center; }
+.hero-art-frame { position: relative; width: min(100%, 300px); aspect-ratio: 1; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.28); border-radius: 50%; background: radial-gradient(circle, rgba(255,193,7,.18), rgba(255,255,255,.04) 64%, transparent 65%); box-shadow: inset 0 0 0 11px rgba(255,255,255,.025), 0 14px 45px rgba(0,0,0,.22); }
+.hero-art-frame img { width: 78%; height: 78%; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 12px 14px rgba(0,0,0,.35)); animation: sprite-float 3.8s ease-in-out infinite; }
+.art-stamp { position: absolute; z-index: 1; top: 8%; right: 2%; width: 58px; height: 58px; display: grid; place-content: center; transform: rotate(9deg); border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); font-family: Georgia, serif; font-size: 14px; line-height: 1; text-align: center; }
+.hero-artwork > p { margin: 14px 0 0; color: #d5ccd2; font-size: 9px; letter-spacing: 1.5px; }
+.hero-artwork > p span { color: var(--gold); }
+@keyframes sprite-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+
+/* 角色清單區用一致的水平留白。 */
+.archive-section { padding: 49px clamp(22px, 6vw, 92px) 72px; }
+
+/* 清單標題與搜尋框同列排列。 */
+.section-heading { margin-bottom: 24px; display: flex; align-items: end; justify-content: space-between; gap: 28px; }
+
+/* 區塊標題字級。 */
+.section-heading h2, .panel-heading h2, .auth-panel h2 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 29px; font-weight: 600; }
+
+/* 清單數量使用低對比小字。 */
+.section-heading h2 span { color: #8b8583; font-family: inherit; font-size: 15px; font-weight: 400; }
+
+/* 搜尋列採無框圖示式輸入。 */
+.search-box { width: min(100%, 340px); min-height: 44px; padding: 0 13px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #aaa39c; }
+.search-box span { color: var(--red); font-size: 25px; line-height: 1; }
+.search-box input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 13px; }
+.search-box input::placeholder { color: #948e89; }
+
+/* 列表控制列將顯示範圍與分頁/無限捲動切換分開呈現。 */
+.archive-toolbar { margin: -6px 0 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.archive-toolbar > p { margin: 0; color: var(--ink-soft); font-size: 11px; }
+.archive-toolbar .segmented-control button { min-width: 94px; }
+.pagination-controls { margin-top: 28px; display: flex; align-items: center; justify-content: center; gap: 18px; }
+.pagination-controls > span { min-width: 88px; color: var(--ink-soft); font-size: 12px; text-align: center; }
+.pagination-controls .button { min-height: 38px; padding: 0 15px; font-size: 11px; }
+.infinite-sentinel { min-height: 42px; padding: 18px 8px; color: #827a79; font-size: 11px; text-align: center; }
+
+/* 顯示清單篩選按鈕列。 */
+.filter-row { margin: -5px 0 22px; }
+
+/* 分段控制維持緊湊、清楚的模式切換。 */
+.segmented-control { display: inline-flex; padding: 3px; border: 1px solid var(--line); background: #eae8e2; }
+.segmented-control button { min-height: 32px; padding: 0 13px; border: 0; color: #6e6868; background: transparent; cursor: pointer; font-size: 12px; }
+.segmented-control button.selected { color: var(--ink); background: var(--white); box-shadow: 0 1px 3px #29232918; }
+
+/* 角色卡片採三欄等寬網格。 */
+.character-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+
+/* 卡片採薄邊框、白底和頂端紅色識別線。 */
+.character-card { min-width: 0; min-height: 290px; padding: 22px; display: flex; flex-direction: column; border: 1px solid #e5ded8; border-left: 6px solid var(--red); border-radius: var(--radius-medium); background: rgba(255,255,255,.95); box-shadow: 0 5px 18px rgba(31,26,36,.055); animation: card-enter 360ms both; animation-delay: calc(var(--card-index, 0) * 35ms); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.character-card:hover { transform: translateY(-3px); border-left-color: var(--gold); box-shadow: 0 12px 24px rgba(211,47,47,.12); }
+
+/* 卡片載入時只做輕微淡入與位移。 */
+@keyframes card-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 卡片頭像與資料序號左右對齊。 */
+.card-topline { display: flex; align-items: start; justify-content: space-between; }
+
+/* 頭像使用穩定正方尺寸，不因文字改變版面。 */
+.character-avatar { width: 78px; height: 78px; flex: 0 0 78px; object-fit: cover; border-radius: 50%; border: 4px solid white; outline: 2px solid var(--gold); background: #e7ded0; box-shadow: 0 5px 13px rgba(31,26,36,.18); }
+
+/* 角色首字替代圖使用深紅底。 */
+.avatar-fallback { display: grid; place-items: center; color: white; background: var(--red-dark); font-family: Georgia, "Noto Serif TC", serif; font-size: 27px; }
+
+/* 角色詳細頁或編輯資訊使用較大頭像。 */
+.character-avatar-large { width: 100px; height: 100px; flex-basis: 100px; }
+
+/* 角色序號字樣。 */
+.card-index { padding-top: 5px; color: #9a938b; font-family: Georgia, serif; font-size: 10px; letter-spacing: 1px; }
+
+/* 角色資料區保留一致的上下間距。 */
+.card-content { padding-top: 17px; }
+.card-content h3 { margin: 0 0 7px; overflow-wrap: anywhere; color: var(--ink); font-family: Georgia, "Noto Serif TC", serif; font-size: 21px; font-weight: 600; }
+.ability-line { width: fit-content; max-width: 100%; margin: 10px 0 0; padding: 5px 11px; overflow-wrap: anywhere; border-radius: 999px; color: white; background: var(--red); font-size: 11px; font-weight: 700; }
+.origin-line { margin: 8px 0 0; color: #807a77; font-size: 11px; }
+.character-tags, .detail-tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-chip { max-width: 100%; padding: 4px 9px; overflow: hidden; border: 1px solid #e5d7c8; border-radius: 999px; color: #534545; background: #f8f0e8; font-size: 10px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.tag-chip-attribute { border-color: #e4c5c4; color: #8c3a40; background: #fbefed; }
+.tag-chip-work { border-color: #ddcca8; color: #795c27; background: #f8f2e5; }
+.biography-preview { margin: 12px 0 0; display: -webkit-box; overflow: hidden; color: #575153; font-size: 12px; line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.reference-link { display: inline-block; margin-top: 10px; color: #796025; font-size: 11px; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* 編輯操作固定在卡片底部並以細線分隔。 */
+.card-actions { margin-top: auto; padding-top: 15px; display: flex; align-items: center; gap: 16px; border-top: 1px solid #eeeae4; }
+.card-actions button, .text-button { padding: 0; border: 0; color: #645d5c; background: transparent; cursor: pointer; font-size: 11px; }
+.card-actions button:hover, .text-button:hover { color: var(--red); }
+.card-actions .delete-action { color: #a44a48; }
+
+/* 收藏按鈕用紅色愛心表示狀態，並保留清楚的可點範圍。 */
+.favorite-button { min-height: 39px; padding: 0 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #e4babb; border-radius: 999px; color: var(--red-dark); background: #fff8f6; cursor: pointer; font-size: 12px; font-weight: 700; white-space: nowrap; transition: transform 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease; }
+.favorite-button > span { font-size: 17px; line-height: 1; }
+.favorite-button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--red); background: #fff0ed; box-shadow: 0 4px 10px rgba(211,47,47,.12); }
+.favorite-button.is-favorited { border-color: #d32f2f; color: white; background: var(--red); }
+.favorite-button.is-favorited:hover:not(:disabled) { color: white; background: var(--red-dark); }
+.favorite-button:disabled { opacity: .6; cursor: wait; }
+.card-actions .favorite-button { min-height: 31px; margin-left: auto; padding: 0 10px; gap: 5px; font-size: 10px; }
+.card-actions .favorite-button > span { font-size: 15px; }
+
+/* 空清單狀態置中並跨越整個網格。 */
+.empty-state { min-height: 240px; grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed #c9c3b9; color: #78716f; text-align: center; }
+.empty-state > span { width: 45px; height: 45px; display: grid; place-items: center; border: 1px solid #c9a453; border-radius: 50%; color: #a97d29; font-family: Georgia, "Noto Serif TC", serif; font-size: 20px; }
+.empty-state h3 { margin: 14px 0 4px; color: var(--ink); font-family: Georgia, "Noto Serif TC", serif; font-size: 20px; }
+.empty-state p { margin: 0; font-size: 12px; }
+
+/* 帳號工作區使用全寬深色分隔帶。 */
+.workspace-section { padding: 62px clamp(22px, 6vw, 92px) 68px; background: #e9e6df; border-top: 1px solid #d9d4ca; }
+
+/* 編輯表單和帳號側欄使用不對稱雙欄。 */
+.workspace-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(230px, .8fr); gap: 22px; align-items: start; }
+
+/* 表單區採純白底、清楚欄位分組。 */
+.editor-panel, .auth-panel { padding: clamp(24px, 4vw, 44px); border: 1px solid #e2ddd6; border-radius: var(--radius-medium); background: var(--white); box-shadow: var(--shadow-panel); }
+.panel-heading { margin-bottom: 25px; }
+.panel-heading > p:last-child, .auth-intro { margin: 7px 0 0; color: var(--ink-soft); font-size: 13px; }
+
+/* 表單標籤與欄位以文字優先呈現。 */
+.field-label { margin: 0 0 17px; display: block; color: #454044; font-size: 12px; font-weight: 700; }
+.field-label > span { color: var(--red); }
+.field-label input:not([type="file"]), .field-label textarea { width: 100%; min-height: 45px; margin-top: 8px; padding: 11px 13px; border: 1px solid #d9d4cd; border-radius: var(--radius-small); outline: none; color: var(--ink); background: #fff; font-size: 13px; font-weight: 400; transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease; }
+.field-label textarea { min-height: 105px; resize: vertical; line-height: 1.6; }
+.field-label input:focus, .field-label textarea:focus { border-color: var(--red); background: #fffefd; box-shadow: 0 0 0 3px rgba(211, 47, 47, .1); outline: 0; }
+.field-label small { margin-top: 6px; display: block; color: #827c78; font-size: 10px; font-weight: 400; }
+.file-input { width: 100%; margin-top: 8px; padding: 12px; border: 1px dashed #c9c1b7; border-radius: var(--radius-small); color: #706a6c; background: #faf9f6; font-size: 11px; }
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-actions { display: flex; gap: 10px; }
+
+/* 帳號側欄使用品牌深色呈現身份資訊。 */
+.account-panel { min-height: 330px; padding: 29px; color: white; background: var(--dark); }
+.account-panel .eyebrow { color: #d0ad5f; }
+.account-initial { width: 48px; height: 48px; margin-top: 19px; display: grid; place-items: center; border: 1px solid #c99d43; border-radius: 50%; color: #e9c66f; font-family: Georgia, serif; font-size: 22px; }
+.account-panel h3 { margin: 14px 0 3px; font-family: Georgia, "Noto Serif TC", serif; font-size: 20px; }
+.account-panel > p:not(.eyebrow) { color: #c6bec4; font-size: 12px; overflow-wrap: anywhere; }
+.account-rule { height: 1px; margin: 24px 0 18px; background: #514952; }
+.account-panel .account-note { line-height: 1.8; }
+.account-panel .text-button { margin-top: 10px; color: #e4c06b; }
+
+/* 未登入區域使用雙欄帳號面板和深色說明面板。 */
+.auth-layout { max-width: 980px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr .9fr; overflow: hidden; border: 1px solid #ded8d1; border-radius: 15px; background: var(--white); box-shadow: var(--shadow-panel); }
+.auth-panel { padding: clamp(27px, 5vw, 54px); border: 0; border-radius: 0; box-shadow: none; }
+.auth-panel h2 { margin-bottom: 0; }
+.auth-intro { margin-bottom: 26px; }
+.auth-panel .field-label { margin-bottom: 16px; }
+.auth-submit { width: 100%; margin-top: 5px; }
+.auth-switch { margin-top: 18px; color: var(--red-dark); }
+
+/* 登入旁欄以紅金構成簡潔主題視覺。 */
+.auth-aside { position: relative; min-height: 440px; padding: 45px 36px; overflow: hidden; color: white; background: linear-gradient(145deg, #211b27, #4b222e); }
+.auth-aside .eyebrow { position: relative; z-index: 1; margin-top: 30px; }
+.auth-aside h3 { position: relative; z-index: 1; margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 28px; font-weight: 500; line-height: 1.5; }
+.auth-aside > p:not(.eyebrow) { position: relative; z-index: 1; max-width: 270px; color: #c8c0c5; font-size: 12px; line-height: 1.9; }
+.aside-symbol { position: absolute; top: 13px; right: 16px; color: rgba(193, 54, 60, .32); font-family: Georgia, serif; font-size: 150px; line-height: 1; }
+.aside-caption { position: absolute; bottom: 28px; color: #aaa0a6; font-size: 9px; letter-spacing: 1.2px; }
+
+/* API 提示訊息固定在視窗下方，不遮住主要表單。 */
+.notice { position: fixed; z-index: 5; right: 22px; bottom: 20px; max-width: min(460px, calc(100vw - 44px)); padding: 13px 42px 13px 16px; color: white; background: #302830; border-left: 3px solid #d5ac53; box-shadow: 0 5px 22px #211b2040; font-size: 13px; }
+.notice button { position: absolute; top: 7px; right: 9px; padding: 2px 6px; border: 0; color: white; background: transparent; cursor: pointer; font-size: 20px; }
+
+/* 頁尾用水平對齊的弱化文字收尾。 */
+.site-footer { min-height: 62px; padding: 15px clamp(22px, 6vw, 92px); display: flex; align-items: center; justify-content: space-between; color: #837c7a; background: var(--white); font-size: 10px; letter-spacing: .3px; }
+.site-footer a { color: inherit; text-decoration: none; }
+.site-footer small { margin-top: 4px; display: block; font-size: 8px; letter-spacing: 1px; }
+.top-nav a.active { color: var(--gold); }
+.nav-loading { width: 17px; height: 17px; display: inline-block; border: 2px solid #756b77; border-top-color: var(--gold); border-radius: 50%; animation: nav-spin .8s linear infinite; }
+@keyframes nav-spin { to { transform: rotate(360deg); } }
+
+/* 登入與註冊各自佔據明確頁面區域。 */
+.auth-page { min-height: calc(100vh - 138px); display: grid; align-content: center; }
+.auth-panel h1, .dashboard-heading h1, .detail-hero h1, .editor-page-heading h1 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 32px; font-weight: 600; }
+.auth-switch-line { margin: 20px 0 0; color: var(--ink-soft); font-size: 12px; }
+.auth-switch-line a, .back-link, .dashboard-back a { color: var(--red-dark); font-weight: 700; text-decoration: none; }
+.auth-switch-line a:hover, .back-link:hover, .dashboard-back a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.auth-aside h2 { position: relative; z-index: 1; margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 28px; font-weight: 500; line-height: 1.5; }
+.register-aside .aside-symbol { color: rgba(255,193,7,.22); }
+
+/* 表單、載入和錯誤訊息採一致的頁面提示樣式。 */
+.page-alert, .page-success { margin: 0 0 18px; padding: 11px 13px; border-left: 3px solid var(--red); color: #76242c; background: #f8e8e5; font-size: 12px; line-height: 1.6; }
+.page-success { border-color: #5b8455; color: #31572d; background: #eaf2e7; }
+.page-state { color: var(--ink-soft); font-size: 13px; }
+
+/* 個人主頁把帳號摘要與投稿區分開來。 */
+.dashboard-page { min-height: calc(100vh - 138px); }
+.dashboard-heading { max-width: 1200px; margin: 0 auto; display: flex; align-items: end; justify-content: space-between; gap: 22px; }
+.dashboard-heading > div > p:last-child { margin: 8px 0 0; color: var(--ink-soft); font-size: 13px; }
+.dashboard-stats { max-width: 1200px; margin: 30px auto 42px; padding: 17px 0; display: flex; gap: clamp(30px, 8vw, 120px); border-top: 1px solid #d7d0c7; border-bottom: 1px solid #d7d0c7; }
+.dashboard-stats div { display: grid; gap: 4px; }
+.dashboard-stats div > span { color: var(--ink); font-family: Georgia, "Noto Serif TC", serif; font-size: 22px; overflow-wrap: anywhere; }
+.dashboard-stats small { color: var(--ink-soft); font-size: 10px; }
+.dashboard-tabs { max-width: 1200px; margin: 0 auto 25px; }
+.dashboard-tabs button { min-height: 38px; padding: 0 17px; }
+.dashboard-tabs button span { margin-left: 5px; color: #8c8582; font-size: 10px; }
+.dashboard-tabs button.selected span { color: var(--red-dark); }
+.dashboard-list-heading { max-width: 1200px; margin: 0 auto 21px; }
+.dashboard-back { max-width: 1200px; margin: 25px auto 0; font-size: 12px; }
+.dashboard-page .empty-state .button { margin-top: 16px; }
+
+/* 全站統計頁用數字摘要配合來源作品長條圖呈現。 */
+.stats-page { max-width: 1280px; min-height: calc(100vh - 138px); margin: 0 auto; }
+.stats-heading { max-width: 1160px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.stats-heading h1 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 34px; }
+.stats-heading > div > p:last-child { margin: 7px 0 0; color: var(--ink-soft); font-size: 13px; }
+.stats-heading-mark { width: 74px; height: 74px; flex: 0 0 74px; display: grid; place-content: center; transform: rotate(7deg); border: 1px solid #d1a643; border-radius: 50%; color: #9b7428; font-family: Georgia, "Noto Serif TC", serif; font-size: 15px; line-height: 1.2; text-align: center; }
+.stats-metric-grid { max-width: 1160px; margin: 0 auto 27px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+.stats-metric { min-height: 142px; padding: 18px 19px; border: 1px solid #e2dbd3; border-top: 3px solid var(--red); border-radius: 9px; background: var(--white); box-shadow: 0 5px 16px rgba(31,26,36,.045); animation: card-enter 320ms both; animation-delay: calc(var(--metric-index, 0) * 55ms); }
+.stats-metric:nth-child(even) { border-top-color: var(--gold); }
+.stats-metric p { margin: 0 0 13px; color: #777071; font-size: 11px; }
+.stats-metric strong { display: block; color: var(--ink); font-family: Georgia, "Noto Serif TC", serif; font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stats-metric span { margin-top: 7px; display: block; color: #948d89; font-size: 10px; }
+.stats-chart-panel { max-width: 1160px; margin: 0 auto; padding: 25px clamp(18px, 4vw, 34px); border: 1px solid #e2dbd3; border-radius: var(--radius-medium); background: var(--white); box-shadow: var(--shadow-panel); }
+.stats-chart-panel > header { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
+.stats-chart-panel > header .eyebrow { margin-bottom: 6px; }
+.stats-chart-panel h2 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 23px; }
+.stats-chart-panel > header > span { color: #918786; font-family: Georgia, serif; font-size: 10px; letter-spacing: 1px; }
+.source-chart { width: 100%; min-height: 280px; margin-top: 18px; }
+.stats-empty { min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: var(--ink-soft); font-size: 12px; text-align: center; }
+.stats-empty > span { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #d2aa58; border-radius: 50%; color: #9c752c; font-family: Georgia, serif; font-size: 19px; }
+.stats-empty p { margin: 0; }
+.stats-footnote { max-width: 1160px; margin: 13px auto 0; color: #8c8481; font-size: 10px; }
+
+/* 能力表單和雷達圖共用六軸顏色與圖表容器。 */
+.stat-fieldset { margin: 5px 0 21px; padding: 17px 17px 2px; border: 1px solid #e0dad3; border-radius: var(--radius-small); background: #fffefa; }
+.stat-fieldset legend { padding: 0 7px; color: #403a3d; font-size: 12px; font-weight: 700; }
+.stat-fieldset legend span { margin-left: 6px; color: #8c8381; font-size: 10px; font-weight: 400; }
+.stat-fieldset > p { margin: -2px 0 13px; color: #817977; font-size: 10px; }
+.stat-input-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 13px; }
+.stat-field input { max-width: 125px; }
+.tag-picker-grid { margin: 3px 0 13px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.tag-picker-label { min-width: 0; }
+.tag-picker-label .tag-select__control { font-size: 12px; }
+.tag-picker-label .tag-select__input-container { color: var(--ink); }
+.tag-picker-label .tag-select__menu { color: var(--ink); }
+.tag-picker-label .tag-select__indicator-separator { background: #e6dfd7; }
+.ability-radar { width: 100%; min-width: 0; }
+.ability-radar-compact { margin: -5px -10px 0; width: calc(100% + 20px); }
+.radar-empty { min-height: 190px; padding: 22px; display: grid; place-items: center; border: 1px dashed #d8cfc6; border-radius: 10px; color: #a9a09c; font-size: 12px; text-align: center; }
+.radar-empty-compact { min-height: 170px; border-color: #5d505e; color: #bfb2bc; }
+.chart-loading { min-height: 220px; border-radius: 10px; background: linear-gradient(90deg, #f4efeb 25%, #faf7f3 50%, #f4efeb 75%); background-size: 200% 100%; animation: chart-shimmer 1.2s infinite linear; }
+@keyframes chart-shimmer { to { background-position: -200% 0; } }
+.editor-radar-preview { margin-top: 22px; }
+.editor-radar-preview > .eyebrow { margin-bottom: 0; }
+.detail-biography > p:nth-of-type(2) { margin: 0; color: #514b4d; font-size: 14px; line-height: 1.95; white-space: pre-wrap; overflow-wrap: anywhere; }
+.detail-radar-panel { max-width: 590px; margin-top: 34px; padding-top: 23px; border-top: 1px solid #e9e2db; }
+.detail-radar-panel .eyebrow { margin-bottom: 5px; }
+.detail-radar-panel h2 { margin-bottom: 5px; }
+
+/* AI 角色關係網提供中心選擇、圖例與可縮放 Canvas。 */
+.relationship-page { max-width: 1320px; min-height: calc(100vh - 138px); margin: 0 auto; }
+.relationship-heading { max-width: 1220px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+.relationship-heading h1 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 34px; }
+.relationship-heading > div > p:last-child { margin: 8px 0 0; color: var(--ink-soft); font-size: 12px; }
+.relationship-controls { max-width: 1220px; margin: 0 auto 12px; display: flex; align-items: end; justify-content: space-between; gap: 18px; }
+.relationship-controls .field-label { width: min(100%, 420px); margin-bottom: 0; }
+.relationship-controls select { width: 100%; min-height: 44px; margin-top: 7px; padding: 0 12px; border: 1px solid #d9d4cd; border-radius: var(--radius-small); color: var(--ink); background: white; font-size: 12px; }
+.relationship-legend { max-width: 1220px; margin: 0 auto 10px; display: flex; align-items: center; gap: 18px; color: #817977; font-size: 10px; }
+.relationship-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.relationship-legend span:last-child { margin-left: auto; }
+.legend-node { width: 9px; height: 9px; display: inline-block; border-radius: 50%; background: var(--red); }
+.legend-line { width: 17px; height: 2px; display: inline-block; background: #b78948; }
+.relationship-canvas { position: relative; width: 100%; min-height: 420px; height: min(67vh, 660px); overflow: hidden; border: 1px solid #e2dbd3; border-radius: var(--radius-medium); background: var(--white); box-shadow: var(--shadow-panel); }
+.relationship-canvas canvas { display: block; }
+.relationship-canvas > .page-state { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.relationship-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--ink-soft); text-align: center; }
+.relationship-empty > span { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid #d3ae61; border-radius: 50%; color: #987329; font-family: Georgia, "Noto Serif TC", serif; font-size: 20px; }
+.relationship-empty h2 { margin: 3px 0 0; color: var(--ink); font-family: Georgia, "Noto Serif TC", serif; font-size: 21px; }
+.relationship-empty p { max-width: 440px; margin: 0 12px 6px; font-size: 11px; line-height: 1.7; }
+.relationship-disclaimer { max-width: 1220px; margin: 12px auto 0; color: #89817f; font-size: 10px; line-height: 1.6; }
+.detail-radar-panel .radar-empty { min-height: 205px; }
+
+/* 角色詳情頁採完整檔案式版面。 */
+.detail-page { max-width: 1250px; min-height: calc(100vh - 138px); margin: 0 auto; }
+.detail-breadcrumb { margin: 0 auto 16px; display: flex; gap: 9px; color: #817a79; font-size: 11px; }
+.detail-breadcrumb a { color: var(--red-dark); text-decoration: none; }
+.detail-panel { overflow: hidden; border: 1px solid #dedad4; border-radius: var(--radius-medium); background: var(--white); box-shadow: var(--shadow-panel); }
+.detail-hero { min-height: 245px; padding: 38px clamp(22px, 6vw, 65px); display: flex; align-items: center; gap: 29px; color: white; background: linear-gradient(112deg, var(--dark), #54252e); }
+.detail-hero .character-avatar { outline-color: var(--gold); }
+.detail-hero .eyebrow { margin-bottom: 10px; }
+.detail-hero h1 { color: white; font-size: clamp(30px, 5vw, 48px); }
+.detail-ability { width: fit-content; max-width: 100%; margin: 13px 0 0; padding: 6px 12px; border-radius: 999px; color: var(--dark); background: var(--gold); font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
+.detail-content { padding: clamp(24px, 5vw, 52px); display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(220px, .8fr); gap: 35px; }
+.detail-biography h2 { margin: 0 0 14px; font-family: Georgia, "Noto Serif TC", serif; font-size: 23px; }
+.detail-biography > p:last-child { margin: 0; color: #514b4d; font-size: 14px; line-height: 1.95; white-space: pre-wrap; overflow-wrap: anywhere; }
+.detail-facts { padding-left: 25px; border-left: 2px dashed #d6c4bc; }
+.detail-facts div { margin-bottom: 18px; display: grid; gap: 5px; }
+.detail-facts span { color: #807877; font-size: 10px; }
+.detail-facts strong { color: var(--ink); font-size: 13px; overflow-wrap: anywhere; }
+.detail-facts > a { color: var(--red-dark); font-size: 12px; }
+.detail-facts div > a { color: var(--red-dark); font-size: 12px; }
+.detail-actions { padding: 18px clamp(22px, 5vw, 52px); display: flex; justify-content: space-between; border-top: 1px solid #e9e4de; }
+.detail-alert { margin: 0; }
+
+/* 新增與編輯共用欄位，但各自顯示頁面標題和預覽側欄。 */
+.editor-page { max-width: 1250px; min-height: calc(100vh - 138px); margin: 0 auto; }
+.editor-page-heading { max-width: 1100px; margin: 0 auto 25px; }
+.editor-page-heading > p:last-child { margin: 8px 0 0; color: var(--ink-soft); font-size: 13px; }
+.editor-layout { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(220px, .7fr); gap: 20px; align-items: start; }
+.editor-aside { min-height: 330px; padding: 28px; border-radius: var(--radius-medium); color: white; background: linear-gradient(145deg, #211b27, #3d2632); box-shadow: 0 8px 22px rgba(31,26,36,.12); }
+.editor-aside .character-avatar { margin: 10px 0 14px; }
+.editor-aside h2 { margin: 0 0 7px; font-family: Georgia, "Noto Serif TC", serif; font-size: 21px; overflow-wrap: anywhere; }
+.editor-aside > p:not(.eyebrow) { margin: 0 0 6px; color: #f0d17a; font-size: 12px; }
+.editor-aside > span { color: #c4bbc2; font-size: 11px; }
+.preview-placeholder { width: 82px; height: 82px; margin: 10px 0 14px; display: grid; place-items: center; border: 2px solid var(--gold); border-radius: 50%; color: white; background: var(--red-dark); font-family: Georgia, "Noto Serif TC", serif; font-size: 30px; }
+.editor-aside .aside-rule { height: 1px; margin: 23px 0 15px; background: #504651; }
+.editor-aside .preview-help { color: #c4bbc2 !important; font-size: 11px !important; line-height: 1.8; }
+.crop-ready-label { margin-top: 8px; display: block; color: #39723a; font-size: 11px; font-weight: 700; }
+.crop-backdrop { position: fixed; z-index: 20; inset: 0; padding: 22px; display: grid; place-items: center; background: rgba(24, 19, 27, .72); backdrop-filter: blur(5px); }
+.crop-dialog { width: min(100%, 560px); max-height: min(92vh, 790px); padding: clamp(20px, 4vw, 30px); overflow-y: auto; border: 1px solid rgba(255,255,255,.55); border-radius: 16px; background: var(--white); box-shadow: 0 24px 80px rgba(0,0,0,.35); animation: crop-dialog-enter 180ms ease-out both; }
+@keyframes crop-dialog-enter { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.crop-dialog-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.crop-dialog-heading .eyebrow { margin-bottom: 6px; }
+.crop-dialog-heading h2 { margin: 0; color: var(--ink); font-family: Georgia, "Noto Serif TC", serif; font-size: 25px; }
+.crop-close { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border: 1px solid #e2ddd6; border-radius: 50%; color: #645d5c; background: white; cursor: pointer; font-size: 22px; line-height: 1; }
+.crop-close:hover { color: var(--red-dark); border-color: #dca7a7; background: #fff6f4; }
+.crop-instructions { margin: 10px 0 17px; color: var(--ink-soft); font-size: 12px; line-height: 1.7; }
+.crop-stage { position: relative; width: 100%; height: clamp(270px, 44vh, 410px); overflow: hidden; border-radius: 11px; background: #211b27; }
+.crop-stage .reactEasyCrop_CropArea { border: 2px solid white; color: rgba(255,255,255,.78); box-shadow: 0 0 0 9999em rgba(14,11,17,.64); }
+.crop-zoom-control { margin-top: 18px; display: grid; grid-template-columns: auto minmax(100px, 1fr) 40px; align-items: center; gap: 14px; color: #514b4d; font-size: 12px; font-weight: 700; }
+.crop-zoom-control input { width: 100%; accent-color: var(--red); cursor: pointer; }
+.crop-zoom-control output { color: var(--red-dark); font-variant-numeric: tabular-nums; text-align: right; }
+.crop-dialog-actions { margin-top: 22px; display: flex; justify-content: end; gap: 10px; }
+.crop-dialog-actions .button { min-width: 116px; }
+.card-content h3 a { color: inherit; text-decoration: none; }
+.card-content h3 a:hover { color: var(--red); }
+.card-actions a { color: #645d5c; font-size: 11px; text-decoration: none; }
+.card-actions a:hover { color: var(--red); }
+
+/* 平板版型改用雙欄角色清單。 */
+@media (max-width: 900px) {
+  .character-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workspace-layout { grid-template-columns: minmax(0, 1.4fr) minmax(210px, .8fr); }
+  .intro { grid-template-columns: minmax(0, 1.1fr) minmax(210px, .9fr); padding-right: 7vw; padding-left: 7vw; }
+  .hero-art-frame { width: min(100%, 250px); }
+  .detail-page { padding-right: 22px; padding-left: 22px; }
+  .editor-page { padding-right: 22px; padding-left: 22px; }
+  .stats-page { padding-right: 22px; padding-left: 22px; }
+  .relationship-page { padding-right: 22px; padding-left: 22px; }
+  .stats-metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* 手機版收合導覽、標題、表單和清單欄位。 */
+@media (max-width: 620px) {
+  .topbar { height: 68px; padding: 0 17px; }
+  .topbar-actions { gap: 8px; }
+  .top-nav { display: none; }
+  .brand { gap: 8px; }
+  .brand-mark { width: 34px; height: 34px; }
+  .brand strong { font-size: 14px; }
+  .brand small { font-size: 6px; letter-spacing: .8px; }
+  .topbar .button-small { min-height: 33px; padding: 0 10px; font-size: 10px; }
+  .user-label { display: none; }
+  .intro { min-height: auto; padding: 37px 23px 27px; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .intro h1 { font-size: 40px; }
+  .intro-copy { font-size: 13px; }
+  .hero-search { min-height: 49px; margin-top: 18px; padding-left: 13px; }
+  .hero-search input { font-size: 11px; }
+  .hero-search button { min-width: 76px; min-height: 37px; padding: 0 11px; font-size: 9px; }
+  .hero-meta { flex-wrap: wrap; gap: 0 14px; }
+  .hero-meta .intro-count, .hero-meta > a { margin-top: 13px; }
+  .hero-meta .intro-count { font-size: 9px; }
+  .hero-meta .intro-count span { font-size: 21px; }
+  .hero-meta > a { font-size: 9px; }
+  .hero-art-frame { width: min(52vw, 176px); }
+  .art-stamp { width: 46px; height: 46px; font-size: 12px; }
+  .hero-artwork > p { margin-top: 8px; font-size: 8px; }
+  .archive-section { padding: 40px 17px 48px; }
+  .archive-toolbar { align-items: start; flex-direction: column; }
+  .archive-toolbar .segmented-control { width: 100%; }
+  .archive-toolbar .segmented-control button { width: 50%; }
+  .section-heading { align-items: stretch; flex-direction: column; gap: 15px; }
+  .section-heading h2 { font-size: 25px; }
+  .search-box { width: 100%; }
+  .character-grid { grid-template-columns: 1fr; gap: 12px; }
+  .character-card { min-height: 260px; }
+  .workspace-section { padding: 42px 17px; }
+  .workspace-layout, .auth-layout { grid-template-columns: 1fr; }
+  .dashboard-heading { align-items: start; flex-direction: column; }
+  .dashboard-stats { margin: 23px auto 34px; gap: 28px; }
+  .dashboard-stats div > span { font-size: 17px; }
+  .dashboard-tabs button { padding: 0 12px; font-size: 11px; }
+  .detail-page, .editor-page { padding-right: 17px; padding-left: 17px; }
+  .detail-hero { min-height: 200px; padding: 25px 19px; gap: 18px; }
+  .detail-hero .character-avatar-large { width: 76px; height: 76px; flex-basis: 76px; }
+  .detail-hero h1 { font-size: 28px; }
+  .detail-content { grid-template-columns: 1fr; gap: 25px; }
+  .detail-facts { padding: 20px 0 0; border-top: 2px dashed #d6c4bc; border-left: 0; }
+  .detail-actions { gap: 10px; }
+  .editor-layout { grid-template-columns: 1fr; }
+  .editor-aside { min-height: auto; }
+  .stats-page { padding-right: 17px; padding-left: 17px; }
+  .stats-heading h1 { font-size: 29px; }
+  .stats-heading-mark { width: 60px; height: 60px; flex-basis: 60px; font-size: 13px; }
+  .stats-metric-grid { gap: 9px; }
+  .stats-metric { min-height: 125px; padding: 14px 12px; }
+  .stats-metric strong { font-size: 28px; }
+  .stats-chart-panel { padding: 20px 12px; }
+  .stats-chart-panel h2 { font-size: 20px; }
+  .source-chart .recharts-yAxis .recharts-cartesian-axis-tick text { font-size: 10px; }
+  .stat-fieldset { padding-right: 11px; padding-left: 11px; }
+  .stat-input-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 9px; }
+  .pagination-controls { gap: 10px; }
+  .pagination-controls .button { padding: 0 11px; }
+  .pagination-controls > span { min-width: 72px; font-size: 10px; }
+  .crop-backdrop { padding: 12px; }
+  .crop-dialog { max-height: 94vh; padding: 20px 17px; border-radius: 13px; }
+  .crop-dialog-heading h2 { font-size: 22px; }
+  .crop-stage { height: min(54vh, 390px); min-height: 250px; }
+  .crop-zoom-control { gap: 9px; }
+  .crop-dialog-actions { margin-top: 17px; }
+  .crop-dialog-actions .button { min-width: 0; flex: 1; padding: 0 12px; }
+  .field-pair { grid-template-columns: 1fr; gap: 0; }
+  .tag-picker-grid { grid-template-columns: 1fr; gap: 0; }
+  .relationship-page { padding-right: 17px; padding-left: 17px; }
+  .relationship-heading { align-items: start; flex-direction: column; }
+  .relationship-heading h1 { font-size: 29px; }
+  .relationship-controls { align-items: stretch; flex-direction: column; }
+  .relationship-controls .field-label { width: 100%; }
+  .relationship-controls > .button { align-self: start; }
+  .relationship-legend { flex-wrap: wrap; gap: 8px 14px; }
+  .relationship-legend span:last-child { width: 100%; margin-left: 0; }
+  .relationship-canvas { min-height: 360px; height: 58vh; }
+  .account-panel { min-height: auto; }
+  .auth-aside { min-height: 300px; padding: 30px 27px; }
+  .auth-aside .eyebrow { margin-top: 17px; }
+  .aside-symbol { top: 4px; font-size: 120px; }
+  .site-footer { padding: 15px 17px; font-size: 9px; }
+}
+
+/* 減少動態偏好時關閉裝飾動畫。 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
