@@ -59,7 +59,7 @@ export default function CharacterCard({ character, favorited = false, favoriteBu
       <div className="card-content">
         <h3><Link to={`/characters/${character.id}`}>{character.character_name}</Link></h3>
         <p className="ability-line">{character.abilities || t("Ability not recorded")}</p>
-        <p className="origin-line">{character.origin_anime || t("Source not recorded")}</p>
+        <p className="origin-line">{character.tags?.filter((tag) => tag.kind === "work").map((tag) => tag.name).join("\u3001") || t("Source not recorded")}</p>
         {character.tags?.length > 0 && (
           <div className="character-tags" aria-label={t("Character tags")}>
             {character.tags.map((tag) => <span className={`tag-chip tag-chip-${tag.kind}`} key={tag.id}>{tag.name}</span>)}

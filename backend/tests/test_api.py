@@ -194,3 +194,32 @@ def test_character_theme_song_fields_round_trip_and_validate_url(client):
     assert unsafe_url.status_code == 422
     unchanged = client.get(f"/characters/{character_id}")
     assert unchanged.json()["theme_song_url"] == "https://example.com/theme-song"
+
+
+# Source works are represented as reusable work tags rather than a free-text field.
+def test_source_work_tags_are_searchable_and_counted_in_stats(client):
+    register_and_login(client)
+    first_tag = client.post("/tags", json={"name": "Embodiment of Scarlet Devil", "kind": "work"})
+    second_tag = client.post("/tags", json={"name": "Perfect Cherry Blossom", "kind": "work"})
+    assert first_tag.status_code == 201, first_tag.text
+    assert second_tag.status_code == 201, second_tag.text
+    tag_ids = f"{first_tag.json()['id']},{second_tag.json()['id']}"
+
+    created = client.post(
+        "/characters",
+        data={"character_name": "Reimu Hakurei", "tag_ids": tag_ids},
+    )
+    assert created.status_code == 201, created.text
+    work_tag_names = {tag["name"] for tag in created.json()["tags"] if tag["kind"] == "work"}
+    assert work_tag_names == {"Embodiment of Scarlet Devil", "Perfect Cherry Blossom"}
+
+    # A character can be found by any of its work tags, not just its name or abilities.
+    search_result = client.get("/characters/page", params={"search": "Cherry Blossom"})
+    assert search_result.status_code == 200
+    assert any(item["character_name"] == "Reimu Hakurei" for item in search_result.json()["items"])
+
+    # The public stats endpoint ranks source works by their shared work tags.
+    stats = client.get("/stats/site")
+    assert stats.status_code == 200
+    top_source_names = {source["name"] for source in stats.json()["top_sources"]}
+    assert {"Embodiment of Scarlet Devil", "Perfect Cherry Blossom"}.issubset(top_source_names)

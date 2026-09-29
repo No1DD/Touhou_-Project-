@@ -196,8 +196,6 @@ class Character(Base):
     abilities: Mapped[str | None] = mapped_column(String(255), nullable=True)
     # 角色傳記或設定；允許舊資料中的 NULL。
     biography: Mapped[str | None] = mapped_column(Text, nullable=True)
-    # 角色來源作品；允許舊資料中的 NULL。
-    origin_anime: Mapped[str | None] = mapped_column(String(255), nullable=True)
     # 參考網址；允許舊資料中的 NULL。
     reference_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     # 角色主題歌曲名稱與可選的歌曲連結。
@@ -349,8 +347,6 @@ class CharacterOut(BaseModel):
     abilities: str | None
     # 回傳角色傳記。
     biography: str | None
-    # 回傳來源作品。
-    origin_anime: str | None
     # 回傳參考網址。
     reference_url: str | None
     # 回傳角色主題歌曲名稱與連結。
@@ -744,12 +740,14 @@ def get_site_stats(db: Session = Depends(get_db)):
     recent_characters = db.scalar(
         select(func.count(Character.id)).where(Character.created_at >= recent_cutoff)
     ) or 0
-    # 統計前八名來源作品；不回傳使用者電子郵件或其他私人資料。
+    # 統計前八名來源作品標籤；不回傳使用者電子郵件或其他私人資料。
     source_rows = db.execute(
-        select(Character.origin_anime, func.count(Character.id).label("count"))
-        .where(Character.origin_anime.is_not(None), Character.origin_anime != "")
-        .group_by(Character.origin_anime)
-        .order_by(func.count(Character.id).desc(), Character.origin_anime.asc())
+        select(Tag.name, func.count(character_tags.c.character_id.distinct()).label("count"))
+        .select_from(Tag)
+        .join(character_tags, character_tags.c.tag_id == Tag.id)
+        .where(Tag.kind == "work")
+        .group_by(Tag.id, Tag.name)
+        .order_by(func.count(character_tags.c.character_id.distinct()).desc(), Tag.name.asc())
         .limit(8)
     ).all()
     # 回傳 dashboard 呈現所需的統計摘要。
@@ -762,7 +760,7 @@ def get_site_stats(db: Session = Depends(get_db)):
     }
 
 
-# 列出角色；search 可搜尋角色名稱、能力或來源作品。
+# 列出角色；search 可搜尋角色名稱、能力或標籤。
 @app.get("/characters", response_model=list[CharacterOut])
 def list_characters(
     # 接收可省略的搜尋字串，並限制最大長度。
@@ -776,11 +774,11 @@ def list_characters(
     if search.strip():
         # 使用參數化查詢，避免把搜尋字串直接拼進 SQL。
         pattern = f"%{search.strip()}%"
-        # 以不區分大小寫的 LIKE 搜尋角色名稱、能力和來源。
+        # 以不區分大小寫的 LIKE 搜尋角色名稱、能力和作品標籤。
         statement = statement.where(
             Character.character_name.ilike(pattern)
             | Character.abilities.ilike(pattern)
-            | Character.origin_anime.ilike(pattern)
+            | Character.tags.any(Tag.name.ilike(pattern))
         )
     # 執行查詢並取出全部角色。
     characters = db.scalars(statement).all()
@@ -807,7 +805,7 @@ def list_characters_page(
         filters.append(
             Character.character_name.ilike(pattern)
             | Character.abilities.ilike(pattern)
-            | Character.origin_anime.ilike(pattern)
+            | Character.tags.any(Tag.name.ilike(pattern))
         )
     # 查詢符合條件的總筆數。
     total = db.scalar(select(func.count(Character.id)).where(*filters)) or 0
@@ -949,11 +947,9 @@ async def analyze_character_relationships(
         raise HTTPException(status_code=503, detail="OpenAI 尚未設定，或將 AI_PROVIDER 設為 ollama 使用本機模型")
     # 本機推論用較小候選集節省運算；雲端模式可使用較多候選提高召回率。
     candidate_limit = 24 if AI_PROVIDER == "ollama" else 40
-    # 優先挑選相同作品或共用標籤的角色。
+    # 優先挑選共用作品或屬性標籤的角色。
     source_tag_ids = [tag.id for tag in source.tags]
     related_filters = []
-    if source.origin_anime:
-        related_filters.append(Character.origin_anime == source.origin_anime)
     if source_tag_ids:
         related_filters.append(Character.tags.any(Tag.id.in_(source_tag_ids)))
     candidate_statement = select(Character).where(Character.id != source.id)
@@ -978,7 +974,7 @@ async def analyze_character_relationships(
         "id": source.id,
         "name": source.character_name,
         "abilities": source.abilities,
-        "origin": source.origin_anime,
+        "origin": ", ".join(tag.name for tag in source.tags if tag.kind == "work") or None,
         "biography": (source.biography or "")[:1200],
         "tags": [tag.name for tag in source.tags],
     }
@@ -988,7 +984,7 @@ async def analyze_character_relationships(
             "id": character.id,
             "name": character.character_name,
             "abilities": character.abilities,
-            "origin": character.origin_anime,
+            "origin": ", ".join(tag.name for tag in character.tags if tag.kind == "work") or None,
             "biography": (character.biography or "")[:350],
             "tags": [tag.name for tag in character.tags],
         }
@@ -1139,7 +1135,7 @@ def get_relationship_graph(
         {
             "id": character.id,
             "name": character.character_name,
-            "group": character.origin_anime or "未分類",
+            "group": next((tag.name for tag in character.tags if tag.kind == "work"), "未分類"),
             "avatar_url": character.cloud_image.secure_url if character.cloud_image else None,
         }
         for character in characters
@@ -1260,8 +1256,6 @@ async def create_character(
     abilities: str | None = Form(default=None, max_length=255),
     # 接收可選的角色傳記。
     biography: str | None = Form(default=None),
-    # 接收可選的來源作品。
-    origin_anime: str | None = Form(default=None, max_length=255),
     # 接收可選的參考網址。
     reference_url: str | None = Form(default=None, max_length=500),
     # 接收可選的角色主題歌曲名稱與連結。
@@ -1311,7 +1305,6 @@ async def create_character(
         character_name=clean_name,
         abilities=abilities,
         biography=biography,
-        origin_anime=origin_anime,
         reference_url=reference_url,
         theme_song=theme_song,
         theme_song_url=theme_song_url,
@@ -1353,8 +1346,6 @@ async def update_character(
     abilities: str | None = Form(default=None, max_length=255),
     # 接收可選的新傳記。
     biography: str | None = Form(default=None),
-    # 接收可選的新來源作品。
-    origin_anime: str | None = Form(default=None, max_length=255),
     # 接收可選的新參考網址。
     reference_url: str | None = Form(default=None, max_length=500),
     # 接收可選的新主題歌曲名稱與連結。
@@ -1398,7 +1389,6 @@ async def update_character(
         "character_name": character_name,
         "abilities": abilities,
         "biography": biography,
-        "origin_anime": origin_anime,
         "reference_url": reference_url,
         "theme_song": theme_song,
         "theme_song_url": theme_song_url,

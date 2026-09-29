@@ -97,7 +97,7 @@ export default function CharacterDetailPage() {
             </div>
           </section>
           <aside className="detail-facts">
-            <div><span>{t("Source Work")}</span><strong>{character.origin_anime || t("Not recorded")}</strong></div>
+            <div><span>{t("Source Work")}</span><strong>{character.tags?.filter((tag) => tag.kind === "work").map((tag) => tag.name).join("\u3001") || t("Not recorded")}</strong></div>
             <div><span>{t("Created")}</span><strong>{new Date(character.created_at).toLocaleDateString(language === "en" ? "en-US" : "zh-TW")}</strong></div>
             {referenceUrl && <a href={referenceUrl} target="_blank" rel="noopener noreferrer">{t("Open reference ↗")}</a>}
             {(character.theme_song || themeSongUrl) && <div><span>{t("Character theme song")}</span><strong>{character.theme_song || t("Track link")}</strong>{themeSongUrl && <a href={themeSongUrl} target="_blank" rel="noopener noreferrer">{t("Open track ↗")}</a>}</div>}

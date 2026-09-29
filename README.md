@@ -193,69 +193,7 @@ alembic upgrade head
 
 若既有開發用 SQLite 是由舊版 `create_all` 建立、尚無 Alembic 版本紀錄，先停止 API 並備份 `backend/characters.db`，確認 backend `.env` 指向該資料庫後，在 backend 目錄執行 `alembic stamp 11c110229789`，再執行 `alembic upgrade head`。這會把舊 schema 標記為初始版本，再只套用後續增量 migration；不要對空資料庫執行這個 stamp。
 
-## 免費前端：GitHub Pages + 本機 FastAPI
-
-GitHub Pages 負責公開前端檔案；API 和 SQLite 仍只在你自己的電腦執行。這種方式不需要租用後端主機，但有兩個限制：後端關閉時網站無法讀寫資料；其他人開啟 Pages 時，`localhost` 指向的是他們自己的電腦，不是你的電腦。不要為了讓別人連線而把 8000 port 轉發到公開網路。
-
-### 1. 建立 GitHub repository
-
-在 GitHub 按 **New repository**，例如命名 `touhou-project`，選擇 **Public**（GitHub Free 的 Pages 需公開 repository）。公開後原始碼人人可見；建立時不要勾選新增 README 或 `.gitignore`，因為專案已有這些檔案。接著在 PowerShell：
-
-```powershell
-Set-Location -LiteralPath "C:\Users\YOUR_NAME\Downloads\P4\Touhou_[Project]"
-git init -b main
-git add .
-git status --short
-```
-
-確認清單裡沒有 `.env`、`backend/characters.db`、`.venv` 或 `node_modules`，再提交並推送（把帳號和 repo 名稱換成你剛建立的值）：
-
-```powershell
-git commit -m "Prepare GitHub Pages deployment"
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/touhou-project.git
-git push -u origin main
-```
-
-若 GitHub 要求登入，使用 GitHub Desktop 或 VS Code 的 **Publish to GitHub** 流程即可，不要把密碼或 token 寫進指令或檔案。
-
-### 2. 開啟 GitHub Pages
-
-在 repository 的 **Settings → Pages**，將 **Build and deployment → Source** 選為 **GitHub Actions**。推送 `main` 後，`Deploy GitHub Pages` workflow 會建置並發布前端；到 **Actions** 查看狀態，成功後 Pages 網址會是 `https://YOUR_GITHUB_USERNAME.github.io/touhou-project/`。部署 workflow 會自動設定 repo 子路徑和 SPA fallback，不需手動上傳 `dist/`。
-
-### 3. 需要使用資料時啟動本機 API
-
-在自己的電腦設定 `backend/.env`。保留 `APP_ENV=development` 與 SQLite `DATABASE_URL`，另外填入固定的 `JWT_SECRET_KEY`，並設定 Pages 網址的 **origin**（不要附 repo path）：
-
-```dotenv
-FRONTEND_ORIGIN=https://YOUR_GITHUB_USERNAME.github.io
-API_ORIGIN=http://localhost:8000
-SESSION_COOKIE_SAMESITE=none
-SESSION_COOKIE_SECURE=true
-```
-
-首次可從範例複製，再填入設定：
-
-```powershell
-Set-Location -LiteralPath "C:\Users\YOUR_NAME\Downloads\P4\Touhou_[Project]\backend"
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-Copy-Item .env.example .env
-notepad .env
-```
-
-啟動 API：
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-uvicorn main:app --host 127.0.0.1 --port 8000 --reload --env-file .env
-```
-
-需要使用資料庫或登入功能時，請保持這個終端和 API 執行中；不用時按 `Ctrl+C` 即可停止。GitHub Pages 網頁會呼叫你瀏覽器所在電腦的 `http://localhost:8000`。瀏覽器可能詢問是否允許網站存取本機網路，也可能依第三方 Cookie 隱私設定阻擋登入 Cookie；請只允許你自己的 Pages 網址。若瀏覽器不允許跨站 Cookie，完整登入功能請改用下方本機 Vite 前端，此時 Cookie 保持預設的 `SameSite=Strict`。
-
-一般瀏覽器只把 `localhost` 導向使用者自己的電腦；因此你的資料不會自動分享給其他訪客。`backend/characters.db` 留在本機且已被 Git 忽略，GitHub Pages 關閉後端時只會顯示無法連線的狀態。
-
-### 4. 本機完整開發
+### 3. 本機完整開發
 
 本機使用 `http://localhost:5173` 的前端和 `http://localhost:8000` 的 API 屬於相同 site，建議 `.env` 使用 `FRONTEND_ORIGIN=http://localhost:5173`、`SESSION_COOKIE_SAMESITE=strict`、`SESSION_COOKIE_SECURE=false`，再依上方本機啟動步驟執行 `npm run dev` 和 Uvicorn。
 

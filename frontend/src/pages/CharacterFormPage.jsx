@@ -15,7 +15,7 @@ import TagPicker from "../components/TagPicker.jsx";
 import { useLanguage } from "../language.jsx";
 
 // 定義表單欄位初始值。
-const EMPTY_FORM = { character_name: "", abilities: "", biography: "", origin_anime: "", reference_url: "", theme_song: "", theme_song_url: "" };
+const EMPTY_FORM = { character_name: "", abilities: "", biography: "", reference_url: "", theme_song: "", theme_song_url: "" };
 // 定義新角色的六項能力預設值。
 const DEFAULT_STATS = { power: "5", defense: "5", speed: "5", magic: "5", technique: "5", luck: "5" };
 // 定義能力表單顯示文字。
@@ -135,7 +135,6 @@ export default function CharacterFormPage() {
           character_name: character.character_name || "",
           abilities: character.abilities || "",
           biography: character.biography || "",
-          origin_anime: character.origin_anime || "",
           reference_url: character.reference_url || "",
           theme_song: character.theme_song || "",
           theme_song_url: character.theme_song_url || "",
@@ -252,14 +251,9 @@ export default function CharacterFormPage() {
           <label className="field-label">{t("Character name")} <span>*</span>
             <input required maxLength="100" value={form.character_name} onChange={(event) => setForm({ ...form, character_name: event.target.value })} placeholder={t("e.g. Reimu Hakurei")} />
           </label>
-          <div className="field-pair">
-            <label className="field-label">{t("Abilities")}
-              <input maxLength="255" value={form.abilities} onChange={(event) => setForm({ ...form, abilities: event.target.value })} placeholder={t("e.g. Manipulates boundaries")} />
-            </label>
-            <label className="field-label">{t("Source work name")}
-              <input maxLength="255" value={form.origin_anime} onChange={(event) => setForm({ ...form, origin_anime: event.target.value })} placeholder={t("e.g. Embodiment of Scarlet Devil")} />
-            </label>
-          </div>
+          <label className="field-label">{t("Abilities")}
+            <input maxLength="255" value={form.abilities} onChange={(event) => setForm({ ...form, abilities: event.target.value })} placeholder={t("e.g. Manipulates boundaries")} />
+          </label>
           <div className="tag-picker-grid">
             <TagPicker label={t("Work tags")} kind="work" options={workTagOptions} value={selectedWorkTags} onChange={setSelectedWorkTags} onCreate={createTag} />
             <TagPicker label={t("Attribute tags")} kind="attribute" options={attributeTagOptions} value={selectedAttributeTags} onChange={setSelectedAttributeTags} onCreate={createTag} />
@@ -310,7 +304,7 @@ export default function CharacterFormPage() {
           )}
           <h2>{form.character_name || t("Character name")}</h2>
           <p>{form.abilities || t("Ability not provided")}</p>
-          <span>{form.origin_anime || t("Source work name")}</span>
+          <span>{selectedWorkTags.length ? selectedWorkTags.map((tag) => tag.label).join("\u3001") : t("Source work name")}</span>
           <div className="editor-radar-preview">
             <p className="eyebrow">{t("ABILITY PREVIEW")}</p>
             <AbilityRadar stats={previewStats} compact />

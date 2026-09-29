@@ -18,6 +18,12 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./pytest-import-only.db")
 os.environ.setdefault("APP_ENV", "test")
 # Tests are isolated from a developer's .env and do not require a Redis server.
 os.environ["RATE_LIMIT_STORAGE_URI"] = "memory://"
+# Pin CORS/cookie settings so a developer's local GitHub Pages configuration
+# in backend/.env cannot change how the test suite's cookies/CORS behave.
+os.environ["FRONTEND_ORIGIN"] = "http://localhost:5173"
+os.environ["API_ORIGIN"] = "http://localhost:8000"
+os.environ["SESSION_COOKIE_SAMESITE"] = "strict"
+os.environ["SESSION_COOKIE_SECURE"] = "false"
 
 # Import the application after configuring the test process environment.
 import main  # noqa: E402
