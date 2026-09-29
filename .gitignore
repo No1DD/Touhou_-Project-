@@ -1,0 +1,18 @@
+# Ignore Python virtual environments and bytecode.
+.venv/
+__pycache__/
+*.py[cod]
+
+# Ignore local SQLite databases and environment secrets.
+*.db
+.env
+
+# Ignore installed frontend packages and generated bundles.
+frontend/node_modules/
+frontend/dist/
+
+# Ignore pytest and coverage artifacts.
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/

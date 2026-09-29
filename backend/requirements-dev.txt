@@ -1,0 +1,9 @@
+# Load runtime API/database/cloud dependencies for local integration testing.
+-r requirements.txt
+# Pytest runner and FastAPI's compatible in-process HTTP test client.
+pytest>=8.3,<9.0
+httpx>=0.27,<1.0
+# Coverage reports for the FastAPI application.
+pytest-cov>=6.0,<7.0
+# Fast, deterministic Python lint and formatter checks in CI.
+ruff>=0.9,<1.0
